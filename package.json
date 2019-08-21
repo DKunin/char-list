@@ -1,0 +1,28 @@
+{
+  "name": "char-list",
+  "version": "0.0.1",
+  "private": false,
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dkunin/char-list.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dkunin/char-list/issues"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "homepage": "https://github.com/dkunin/char-list",
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "any-json": "3.1.0",
+    "body-parser": "^1.18.3",
+    "chance": "^1.0.18",
+    "express": "^4.16.4",
+    "fuse.js": "^3.4.4",
+    "git-rev": "^0.2.1",
+    "yaml-to-json": "0.3.0"
+  }
+}

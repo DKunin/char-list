@@ -1,0 +1,197 @@
+name: Ozmozis
+class: Cleric
+level: 7
+background: Acolyte
+race: Human
+alignment: LG
+experience: '25700'
+nextlevel: '34000'
+inpsiration: false
+AC: 18
+HP:
+  max: 44
+  current: '21'
+initiative: -1
+speed: 30
+proficiency: 3
+hitDice: d8
+hitDieUsed: 3
+spellSlots:
+  levelOne:
+    total: 4
+    available: '4'
+  levelTwo:
+    total: 3
+    available: '3'
+  levelThree:
+    total: 3
+    available: '2'
+  levelFour:
+    total: 1
+    available: '0'
+abilities:
+  str: 16
+  dex: 9
+  con: 14
+  int: 14
+  wis: 16
+  cha: 11
+spellcastingAbility: wis
+weapons:
+  equipped:
+    - name: Mace
+      damage: 1d6 bludgening
+      mod: str
+    - name: Crossbow light
+      mod: dex
+      damage: 1d8 piercing
+      ammunition: 20
+    - name: Shield
+    - name: Chain Mail
+spells:
+  zeroLevel:
+    - name: Word of Radiance
+    - name: Guidance
+    - name: Light
+    - name: Sacred Flame
+    - name: Turn Undead
+    - name: Preserve Life
+      description: Heal 5 times your cleric level
+  firstLevel:
+    - name: Cure Wounds
+      prepeared: true
+    - name: Bless
+    - name: Divine Favor
+    - name: Sanctuary
+    - name: Healing Word
+      prepeared: true
+    - name: Shield of Faith
+  secondLevel:
+    - name: Aid
+      prepeared: true
+    - name: Barkskin
+    - name: Lesser Restoration
+    - name: Magic Weapon
+    - name: Pass Without Trace
+    - name: Warding Bond
+    - name: Prayer of Healing
+    - name: Silence
+      prepeared: true
+    - name: Spiritual Weapon
+      prepeared: true
+    - name: Guiding Bolt
+      prepeared: true
+  thirdLevel:
+    - name: Beacon of hope
+    - name: Revivify
+    - name: Spirit Guardians
+      prepeared: true
+    - name: Life Transference
+      prepeared: true
+    - name: Daylight
+    - name: Water walk
+    - name: Mass Healing Word
+    - name: Dispel Magic
+    - name: Remove Curse
+    - name: Magic Circle
+  forthLevel:
+    - name: Banishment
+      prepeared: true
+    - name: Death Ward
+      prepeared: true
+inventory:
+  - pouch
+  - common clothes
+  - waterskin
+  - candles (10)
+  - Alms box
+  - Incense
+  - Rations 1 day
+  - Censer
+  - Amulet
+  - Vestiments
+  - Tinder box
+  - Blanket
+  - Backpack
+  - Кадило
+  - Палатка
+proficiencies:
+  weapons:
+    - Simple weapons
+    - 'Armor (heavy, light, medium, shields)'
+  savingThrows:
+    - wis
+    - cha
+money:
+  gp: 15
+languages:
+  - Common
+  - Celestial
+  - Elven
+  - Deep
+spellcasting: wisdom
+spellSaveDc: 14
+spellAttackBonus: 6
+personalityTrait: "Nothing\_can\_shake\_my\_optimism"
+ideals: "I\_trust\_my\_deity\_will\_guide\_my\_actions, Sigarda"
+bonds: "Everything\_I\_do\_is\_for\_common\_people"
+flaws: "Once\_I\_pick\_a\_goal,\_I\_become\_opsessed\_with\_it"
+otherTraits:
+  - name: Channel Divinity
+    description: 2/rest
+  - name: Disciple of Life.
+    description: >-
+      1st level or greater healing spells increase healing by 2 + spel 's level
+      HPs.
+  - name: Shelter the Faithful.
+    description: >-
+      You and your companions can expect free healing at an establishment of
+      your faith.
+  - name: Blessed Healer
+    description: >-
+      Beginning at 6th level, the healing spells you cast on others heal you as
+      well. When you cast a spell of 1st level or higher that restores hit
+      points to a creature other than you, you regain hit points equal to 2 +
+      the spell’s level.
+allAbilities:
+  - name: Acrobatics
+    mod: dex
+  - name: Animal Handling
+    mod: wis
+  - name: Arcana
+    mod: int
+  - name: Athletics
+    mod: str
+  - name: Deception
+    mod: cha
+  - name: History
+    mod: int
+    proficient: true
+  - name: Insight
+    mod: wis
+    proficient: true
+  - name: Intimidation
+    mod: cha
+  - name: Investigation
+    mod: int
+  - name: Medicine
+    mod: wis
+  - name: Nature
+    mod: int
+  - name: Perception
+    mod: wis
+  - name: Performance
+    mod: cha
+  - name: Persuasion
+    mod: cha
+    proficient: true
+  - name: Religion
+    mod: int
+    proficient: true
+  - name: Sleight of Hand
+    mod: dex
+  - name: Stealth
+    mod: dex
+  - name: Survival
+    mod: wis
+notes:

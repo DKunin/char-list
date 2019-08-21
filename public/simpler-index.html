@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DND Char</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.0/vue.min.js"></script>
+    <style>
+      body {      
+          padding: 10px;
+      }
+
+      .layout {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .column {
+        width: 40%;
+      }
+
+      .column.narrow {
+        width: 20%;
+      }
+
+       .proficient-ability, .prepeared-spell {
+        font-weight: bold;
+      }
+      @media screen and (max-width: 767px) {
+        .layout {
+          flex-direction: column;
+        }
+        .column, .column.narrow {
+          width: 100%
+        }
+      }
+
+      .inline-change {
+        width: 60px;
+        text-align: center;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      dialog {
+        max-width: 500px;
+      }
+
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <template id="char">
+
+        <main class="layout">
+          <dialog :open="dialogOpen" @click="closeDialog">
+            <h2>{{ dialogContents.name }}</h2>
+            <p>{{ dialogContents.time }}</p>
+            <p>{{ dialogContents.range }}</p>
+            <p>{{ (dialogContents.components || []).join(',') }}</p>
+            <p>{{ dialogContents.text }}</p>
+            <p>{{ (dialogContents.classes || []).join(',') }}</p>
+            <p>{{ dialogContents.duration }}</p>
+            <p>{{ dialogContents.level }}</p>
+            <p>Material: {{ dialogContents.material }}</p>
+            <p v-if="dialogContents.ritual">Ritual</p>
+            <p>{{ dialogContents.school }}</p>
+          </dialog>
+          <div class="column">
+              <h2>
+                {{ char.name }} {{ char.race }} ({{ char.level }}) {{ char.alignment }}
+                <br>{{ char.sex }}
+                <br>AC: {{char.AC}}
+                <br>HP: {{char.HP.max}}
+                <br>Experience: {{ char.experience }}
+              </h2>
+            <ul>
+              <li v-for="(val, key) in char.abilities">
+                <h3>{{ key | abilityfull }}: {{ val | modificator }}</h3>
+              </li>
+            </ul>
+            <ul>
+              <li v-if="char.mannerisms">{{char.mannerisms}}</li>
+              <li v-if="char.traits">{{char.traits}}</li>
+              <li v-if="char.profession">{{char.profession}}</li>
+            </ul>
+          </div>
+            <div class="column">
+                <h4>Weapons</h4>
+                <ul>
+                    <li v-for="weapon in char.weapons.equipped">
+                        <span>{{ weapon.name }} <span v-if="weapon.ammunition">({{weapon.ammunition}})</span></span>
+                        <span>+{{ char.abilities['str'] | modificator | abilityMod(char.proficiency) }},</span><span v-if="weapon.damage">dmg: {{char.abilities['str'] | modificator}} + {{ weapon.damage }}</span>
+                    </li>
+                  </ul>
+            </div>
+            <div class="column">
+                <h4>Spells</h4>
+                  spell DC {{ 8 + char.proficiency + Math.floor((char.abilities[char.spellcastingAbility] - 10) / 2) }} <br>
+                  spell attack bonus: {{ char.proficiency + Math.floor((char.abilities[char.spellcastingAbility] - 10) / 2) }}
+                  <ul>
+                    <li v-for="(spellLevels, key) in char.spellSlots">
+                        <b>{{ key }}:</b> {{ spellLevels.total }}
+                    </li>
+                  </ul>
+
+                  <ul>
+                    <li v-for="(spellLevels, key) in char.spells">
+                        <b>{{ key }}:</b>
+                        <ul>
+                          <li v-for="singleSpell in spellLevels">
+                            <span
+                              :class=" singleSpell.prepeared ? 'prepeared-spell' : null "
+                              :title="singleSpell.description"
+                              @click="openSpell(singleSpell.name)"
+                            >{{ singleSpell.name }}</span>
+                          </li>
+                        </ul>
+                    </li>
+                  </ul>
+            </div>
+        </main>
+
+    </template>
+
+</body>
+
+<script src="/js/script.js"></script>
+</html>

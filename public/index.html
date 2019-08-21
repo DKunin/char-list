@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DND Char</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"> -->
+    <script type="text/javascript" src="./js/vue.min.js"></script>
+    <style>
+      body {      
+          padding: 10px;
+      }
+
+      .layout {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .column {
+        width: 30%;
+      }
+
+      .column.narrow {
+        width: 20%;
+      }
+
+       .proficient-ability, .prepeared-spell {
+        font-weight: bold;
+      }
+      @media screen and (max-width: 767px) {
+        .layout {
+          flex-direction: column;
+        }
+        .column, .column.narrow {
+          width: 100%
+        }
+      }
+
+      .inline-change {
+        width: 60px;
+        text-align: center;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      dialog {
+        max-width: 500px;
+      }
+
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <template id="char">
+        <div>
+          <div>
+              
+                <h2>
+                  {{ char.name }} ({{ char.level }}), 
+                  {{ char.alignment }},
+                  AC: {{char.AC}},
+                  HP: <input @change="handleChange" class="inline-change" type="number" v-model="char.HP.current" />/{{char.HP.max}},
+                  spell DC {{ 8 + char.proficiency + Math.floor((char.abilities[char.spellcastingAbility] - 10) / 2) }},
+                  spell att bonus: {{ char.proficiency + Math.floor((char.abilities[char.spellcastingAbility] - 10) / 2) }},
+                  Ini: {{ char.abilities.dex | modificator }}
+                </h2>
+
+                exp: <input @change="handleChange" class="inline-change" type="number" v-model="char.experience" />, hit die: {{ char.level }} * {{ char.hitDice }}, prof: {{ char.proficiency }}
+              
+          </div>
+          <dialog :open="dialogOpen" @click="closeDialog">
+            <h2>{{ dialogContents.name }}</h2>
+            <p>{{ dialogContents.time }}</p>
+            <p>{{ dialogContents.range }}</p>
+            <p>{{ (dialogContents.components || []).join(',') }}</p>
+            <p>{{ dialogContents.text }}</p>
+            <p>{{ (dialogContents.classes || []).join(',') }}</p>
+            <p>{{ dialogContents.duration }}</p>
+            <p>{{ dialogContents.level }}</p>
+            <p>Ritual: {{ dialogContents.ritual }}</p>
+            <p>Material: {{ dialogContents.material }}</p>
+            <p v-if="dialogContents.ritual">Ritual</p>
+            <p>{{ dialogContents.school }}</p>
+          </dialog>
+          <div class="layout">
+            
+            <div class="column">
+              <div>
+                <ul>
+                    <li v-for="(val, key) in char.abilities">
+                        <div>{{ key }}: {{ val | modificator }}</div>
+                    </li>
+                </ul>
+              </div>
+
+              <div>
+                <ul>
+                    <li v-for="abli in char.allAbilities">
+                        <div :title="abli.mod" :class="abli.proficient ? 'proficient-ability' : ''">{{ abli.name }} ({{abli.mod}}): {{ char.abilities[abli.mod] | modificator | abilityMod(abli.proficient ? char.proficiency : 0) }}</div>
+                    </li>
+                </ul>
+                <h4>Saving throws</h4>
+                <ul>
+                    <li v-for="(val, key) in char.abilities">
+                        <span>{{ key }}</span>: <span>{{ val | modificator | abilityMod(char.proficiencies.savingThrows.indexOf(key) >=0 ? char.proficiency : 0) }}</span>
+                    </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="column">
+              <div>
+                <div>
+                    <ul>
+                      <li v-for="weapon in char.weapons.equipped">
+                          <span>{{ weapon.name }}
+                              <span v-if="weapon.ammunition"><input @change="handleChange" class="inline-change" type="number" v-model="weapon.ammunition" /></span>
+                          </span>
+                          <span v-if="weapon.mod">+{{ char.abilities[weapon.mod] | modificator | abilityMod(char.proficiency) }},</span><span v-if="weapon.damage">dmg: {{char.abilities[weapon.mod] | modificator}} + {{ weapon.damage }}</span>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li v-for="(spellLevels, key) in char.spellSlots">
+                          <b>{{ key }}:</b>
+                          <input @change="handleChange" class="inline-change" type="number" v-model="spellLevels.available" /> /
+                          {{ spellLevels.total }}
+                      </li>
+                    </ul>
+
+                    <div>
+                      
+                    </div>
+
+                    <label for="">
+                      Only prepeared
+                      <input type="checkbox" v-model="onlyShowPrepeared">
+                    </label>
+
+                    <ul>
+                      <li v-for="(spellLevels, key) in char.spells">
+                          <b>{{ key }}:</b>
+                          <ul>
+                            <li v-for="singleSpell in sortByPrepearedness(spellLevels, key)">
+                              <span
+                                :class=" singleSpell.prepeared ? 'prepeared-spell' : null "
+                                :title="singleSpell.description"
+                                @click="openSpell(singleSpell.name)"
+                              >{{ singleSpell.name }}</span>
+                            </li>
+                          </ul>
+                      </li>
+                    </ul>
+
+                    <ul>
+                      
+                      <li v-for="trait in char.otherTraits">
+                        <b>{{trait.name}}</b>: {{trait.description.replace(/&nbsp;/g,' ')}}
+
+                      </li>
+
+                    </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="column narrow">
+                <h4>Inventory</h4>
+                  <ul>
+                      <li v-for="inventoryItem in char.inventory" @dblClick="deleteInventoryItem(inventoryItem)">
+                          {{ inventoryItem }}
+                      </li>
+                      <input type="text" @change="handleAddInventory" />
+                  </ul>
+                  <h4>Money</h4>
+                  <ul>
+                    <li v-for="(val, key) in char.money">
+                          {{ key }} : {{ val }}
+                    </li>
+                  </ul>
+                  <h4>Notes</h4>
+                  <textarea v-model="char.notes" @change="handleChange" id="" cols="20" rows="5"></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+    </template>
+
+</body>
+
+<script src="./js/script.js"></script>
+</html>
